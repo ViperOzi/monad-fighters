@@ -1,0 +1,14 @@
+{
+    "name": "monad-battle-contracts",
+    "version": "1.0.0",
+    "description": "Smart contracts for Monad Battle betting game",
+    "scripts": {
+        "compile": "npx hardhat compile",
+        "test": "npx hardhat test",
+        "deploy": "npx hardhat run scripts/deploy.js --network monadTestnet"
+    },
+    "devDependencies": {
+        "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+        "hardhat": "^2.19.0"
+    }
+}

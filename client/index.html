@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monad Fighters - 3 Player Arena</title>
+  <meta name="description" content="3 Player Local Battle Game - Monad Fighters">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">⚔️</span>
+        <h1>MONAD FIGHTERS</h1>
+      </div>
+      <div class="header-subtitle">3 Player Arena</div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Lobby Section - 3 Player Setup -->
+      <section class="lobby-section" id="lobbySection">
+        <div class="lobby-card lobby-3player">
+          <h2 class="section-title">🎮 3 Player Setup</h2>
+
+          <!-- Player 1 -->
+          <div class="player-setup player1-setup">
+            <div class="player-header">
+              <span class="player-badge p1">P1</span>
+              <span class="player-color-indicator" style="background: #ef4444;"></span>
+              <span class="control-hint">WASD + E</span>
+            </div>
+            <div class="player-inputs">
+              <input type="text" id="player1Name" class="input-field name-input" placeholder="Oyuncu 1 İsmi"
+                maxlength="12" value="Player 1">
+              <div class="bet-input-group">
+                <input type="number" id="player1Bet" class="input-field bet-input" placeholder="0" min="0" step="1"
+                  value="1">
+                <span class="bet-suffix">MONAT</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Player 2 -->
+          <div class="player-setup player2-setup">
+            <div class="player-header">
+              <span class="player-badge p2">P2</span>
+              <span class="player-color-indicator" style="background: #22c55e;"></span>
+              <span class="control-hint">YGHJ + U</span>
+            </div>
+            <div class="player-inputs">
+              <input type="text" id="player2Name" class="input-field name-input" placeholder="Oyuncu 2 İsmi"
+                maxlength="12" value="Player 2">
+              <div class="bet-input-group">
+                <input type="number" id="player2Bet" class="input-field bet-input" placeholder="0" min="0" step="1"
+                  value="1">
+                <span class="bet-suffix">MONAT</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Player 3 -->
+          <div class="player-setup player3-setup">
+            <div class="player-header">
+              <span class="player-badge p3">P3</span>
+              <span class="player-color-indicator" style="background: #3b82f6;"></span>
+              <span class="control-hint">Arrows + 1</span>
+            </div>
+            <div class="player-inputs">
+              <input type="text" id="player3Name" class="input-field name-input" placeholder="Oyuncu 3 İsmi"
+                maxlength="12" value="Player 3">
+              <div class="bet-input-group">
+                <input type="number" id="player3Bet" class="input-field bet-input" placeholder="0" min="0" step="1"
+                  value="1">
+                <span class="bet-suffix">MONAT</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Pot Display -->
+          <div class="pot-display">
+            <div class="pot-label">💰 TOPLAM HAVUZ</div>
+            <div class="pot-breakdown">
+              <span class="pot-player p1">P1: <span id="pot1">1</span></span>
+              <span class="pot-plus">+</span>
+              <span class="pot-player p2">P2: <span id="pot2">1</span></span>
+              <span class="pot-plus">+</span>
+              <span class="pot-player p3">P3: <span id="pot3">1</span></span>
+              <span class="pot-equals">=</span>
+            </div>
+            <div class="pot-amount" id="totalPot">3.00 MONAT</div>
+            <div class="pot-hint">Kazanan her şeyi alır!</div>
+          </div>
+
+          <!-- Start Button -->
+          <button class="btn btn-primary btn-xl" id="startBattle">
+            <span class="btn-icon">⚔️</span>
+            START BATTLE!
+          </button>
+        </div>
+
+        <!-- Power-ups Info Card -->
+        <div class="powerups-card">
+          <h3>🎁 Power-Ups</h3>
+          <div class="powerup-list">
+            <div class="powerup-item health">
+              <span class="powerup-icon">❤️</span>
+              <div class="powerup-info">
+                <span class="powerup-name">Health Pack</span>
+                <span class="powerup-desc">+15% Can</span>
+              </div>
+            </div>
+            <div class="powerup-item damage">
+              <span class="powerup-icon">⚔️</span>
+              <div class="powerup-info">
+                <span class="powerup-name">Damage Boost</span>
+                <span class="powerup-desc">+5% Hasar (kalıcı)</span>
+              </div>
+            </div>
+            <div class="powerup-item stamina">
+              <span class="powerup-icon">⚡</span>
+              <div class="powerup-info">
+                <span class="powerup-name">Stamina Rush</span>
+                <span class="powerup-desc">10sn: +20% Hız, +10% Vuruş Hızı</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="controls-info">
+            <h4>🎮 Kontroller</h4>
+            <table class="controls-table">
+              <tr>
+                <td><span class="badge p1">P1</span></td>
+                <td>W A S D</td>
+                <td>E</td>
+              </tr>
+              <tr>
+                <td><span class="badge p2">P2</span></td>
+                <td>Y G H J</td>
+                <td>U</td>
+              </tr>
+              <tr>
+                <td><span class="badge p3">P3</span></td>
+                <td>← → ↑</td>
+                <td>1</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Game Section -->
+      <section class="game-section" id="gameSection" style="display: none;">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+        <div class="game-overlay" id="gameOverlay" style="display: none;">
+          <div class="overlay-content" id="overlayContent"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
