@@ -1,7 +1,9 @@
 import { LocalGameManager } from './game/LocalGameManager.js';
+import { WalletManager } from './wallet/WalletManager.js';
 
 // 3 Player Local Multiplayer Mode
 let localGame = null;
+const walletManager = new WalletManager();
 
 // DOM Elements
 const lobbySection = document.getElementById('lobbySection');
@@ -25,9 +27,13 @@ function updatePotDisplay() {
   const total = bet1 + bet2 + bet3;
 
   // Update individual player displays
-  document.getElementById('pot1').textContent = bet1.toFixed(1);
-  document.getElementById('pot2').textContent = bet2.toFixed(1);
-  document.getElementById('pot3').textContent = bet3.toFixed(1);
+  const p1Disp = document.getElementById('pot1');
+  const p2Disp = document.getElementById('pot2');
+  const p3Disp = document.getElementById('pot3');
+
+  if (p1Disp) p1Disp.textContent = bet1.toFixed(1);
+  if (p2Disp) p2Disp.textContent = bet2.toFixed(1);
+  if (p3Disp) p3Disp.textContent = bet3.toFixed(1);
 
   // Update total
   totalPotDisplay.textContent = `${total.toFixed(2)} MONAT`;
@@ -46,7 +52,7 @@ startBattleBtn.addEventListener('click', () => {
   startGame();
 });
 
-function startGame() {
+async function startGame() {
   // Get player names and bets
   const player1Name = document.getElementById('player1Name').value.trim() || 'Player 1';
   const player2Name = document.getElementById('player2Name').value.trim() || 'Player 2';
@@ -57,6 +63,47 @@ function startGame() {
   const player3Bet = parseFloat(player3BetInput.value) || 0;
 
   const totalPot = player1Bet + player2Bet + player3Bet;
+
+  // Handle Wallet Payment
+  if (totalPot > 0) {
+    const originalText = startBattleBtn.innerHTML;
+    startBattleBtn.disabled = true;
+    startBattleBtn.innerHTML = '<span class="btn-icon">🦊</span> Bağlanıyor...';
+
+    try {
+      const address = await walletManager.connect();
+      if (!address) {
+        alert("Cüzdan bağlanamadı! Lütfen MetaMask'ı kontrol et.");
+        startBattleBtn.disabled = false;
+        startBattleBtn.innerHTML = originalText;
+        return;
+      }
+
+      const correctAmount = totalPot.toFixed(2);
+      console.log("Processing payment for:", correctAmount);
+
+      startBattleBtn.innerHTML = `<span class="btn-icon">💸</span> Ödeniyor: ${correctAmount} MON...`;
+
+      const result = await walletManager.payAmount(correctAmount);
+
+      if (!result.success) {
+        alert("Ödeme başarısız: " + (result.error.data?.message || result.error.message || result.error));
+        startBattleBtn.disabled = false;
+        startBattleBtn.innerHTML = originalText;
+        return;
+      }
+
+      startBattleBtn.innerHTML = '<span class="btn-icon">✅</span> Ödendi! Başlıyor...';
+      await new Promise(r => setTimeout(r, 1000)); // Show success briefly
+
+    } catch (err) {
+      console.error(err);
+      alert("Bir hata oluştu: " + err.message);
+      startBattleBtn.disabled = false;
+      startBattleBtn.innerHTML = originalText;
+      return;
+    }
+  }
 
   // Hide lobby, show game
   lobbySection.style.display = 'none';
@@ -123,5 +170,5 @@ function handleGameEnd(result) {
   }
 }
 
-console.log('🎮 Monad Battle - 3 Player Arena Ready!');
-console.log('💰 Individual betting enabled - winner takes all!');
+console.log('🎮 Monad Fighters - 3 Player Arena Ready!');
+console.log('💰 Wallet betting enabled!');

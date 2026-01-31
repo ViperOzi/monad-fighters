@@ -1,8 +1,12 @@
+import { ethers } from 'ethers';
+
 export class WalletManager {
     constructor() {
         this.address = null;
         this.provider = null;
         this.signer = null;
+        // Game contract / House address - for demo using a random address
+        this.houseAddress = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
     }
 
     async connect() {
@@ -13,11 +17,9 @@ export class WalletManager {
 
         try {
             // Request account access
-            const accounts = await window.ethereum.request({
-                method: 'eth_requestAccounts'
-            });
-
-            this.address = accounts[0];
+            this.provider = new ethers.BrowserProvider(window.ethereum);
+            this.signer = await this.provider.getSigner();
+            this.address = await this.signer.getAddress();
 
             // Check if we need to add Monad network
             await this.ensureMonadNetwork();
@@ -62,11 +64,45 @@ export class WalletManager {
         }
     }
 
+    async payAmount(amount) {
+        if (!this.signer) await this.connect();
+
+        try {
+            const tx = await this.signer.sendTransaction({
+                to: this.houseAddress,
+                value: ethers.parseEther(amount.toString())
+            });
+            console.log('Transaction sent:', tx.hash);
+            // Wait for confirmation
+            await tx.wait();
+            return { success: true, hash: tx.hash };
+        } catch (error) {
+            console.error('Payment failed:', error);
+            return { success: false, error: error };
+        }
+    }
+
     getAddress() {
         return this.address;
     }
 
     isConnected() {
         return this.address !== null;
+    }
+    async sendToWinner(winnerAddress, amount) {
+        if (!this.signer) await this.connect();
+
+        try {
+            const tx = await this.signer.sendTransaction({
+                to: winnerAddress,
+                value: ethers.parseEther(amount.toString())
+            });
+            console.log('Payout sent:', tx.hash);
+            await tx.wait();
+            return { success: true, hash: tx.hash };
+        } catch (error) {
+            console.error('Payout failed:', error);
+            return { success: false, error: error };
+        }
     }
 }
